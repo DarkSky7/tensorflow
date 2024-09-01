@@ -900,7 +900,7 @@ def set_clang_compiler_path_win(environ_cp):
 
   return clang_compiler_path
 
-
+''' # not working too well MRL (2024-Aug-28)
 def retrieve_clang_version(clang_executable):
   """Retrieve installed clang version.
 
@@ -931,7 +931,19 @@ def retrieve_clang_version(clang_executable):
 
   print('You have Clang %s installed.\n' % curr_version)
   return curr_version
-
+'''
+# Claude's fix (2024-Aug-28)
+def retrieve_clang_version(clang_executable):
+    import subprocess
+    try:
+        output = subprocess.check_output([clang_executable, '--version']).decode('utf-8')
+        version_line = output.split('\n')[0]
+        version = version_line.split('version ')[1].split()[0]
+        return version
+    except Exception as e:
+        print(f"Error detecting Clang version: {e}")
+        return None
+# end of Claude's fix (2024-Aug-28)
 
 # Disable clang extension that rejects type definitions within offsetof.
 # This was added in clang-16 by https://reviews.llvm.org/D133574.
@@ -940,7 +952,7 @@ def retrieve_clang_version(clang_executable):
 # offset of in the current version of ubp. See
 # https://github.com/protocolbuffers/upb/blob/9effcbcb27f0a665f9f345030188c0b291e32482/upb/upb.c#L183.
 def disable_clang_offsetof_extension(clang_version):
-  if int(clang_version.split('.')[0]) in (16, 17):
+  if int(clang_version.split('.')[0]) in (16, 17, 18):
     write_to_bazelrc('build --copt=-Wno-gnu-offsetof-extensions')
 
 
