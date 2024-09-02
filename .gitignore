@@ -49,3 +49,6 @@ gradleBuild
 Podfile.lock
 Pods
 xcuserdata
+.tf_configure.bazelrc~
+build_output.txt
+third_party/riegeli/
